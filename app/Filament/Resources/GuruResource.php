@@ -33,18 +33,21 @@ class GuruResource extends Resource
     {
         return $form
             ->schema([
-                TextInput::make('nama')
+                Forms\Components\TextInput::make('nama')
                     ->label('Nama')
-                    ->required(),
+                    ->required()
+                    ->maxLength(255),
 
-                    TextInput::make('nip')
+               Forms\Components\TextInput::make('nip')
                     ->label('NIP')
                     ->required()
                     ->maxLength(18)
-                    ->rule('regex:/^[0-9]{18}$/')
-                    ->autocomplete(false),                
+                    ->rules(fn ($record) => [
+                        'digits_between:1,18',
+                        Rule::unique('gurus', 'nip')->ignore($record?->id),
+                    ]),                
 
-                Select::make('gender')
+                Forms\Components\Select::make('gender')
                     ->label('Gender')
                     ->options([
                         'L' => 'Laki-laki',
@@ -52,21 +55,28 @@ class GuruResource extends Resource
                     ])
                     ->required(),
 
-                TextInput::make('alamat')
+                Forms\Components\TextInput::make('email')
+                ->required()
+                ->label('Email')
+                ->helperText('Gunakan format: <nama>@gurusija.com')
+                ->rules(fn ($record) => [
+                    'regex:/^[a-zA-Z0-9._%+-]+@gurusija\.com$/',
+                    Rule::unique('gurus', 'email')->ignore($record?->id),
+                ])
+                ->validationMessages([
+                    'regex' => 'Email harus menggunakan domain @gurusija.com dan format <nama>@gurusija.com.',
+                ]),
+
+                Forms\Components\TextInput::make('alamat')
                     ->label('Alamat')
                     ->required()
-                    ->maxLength(255),
-
-                TextInput::make('email')
-                    ->label('Email')
-                    ->required()
-                    ->email() // Validasi format email
                     ->maxLength(255),
 
                     TextInput::make('kontak')
                     ->label('Kontak')
                     ->required()
-                    ->maxLength(20), 
+                    ->maxLength(20)
+                    ->tel(),
             ]);
     }
 
@@ -74,12 +84,12 @@ class GuruResource extends Resource
     {
         return $table
             ->columns([
-                TextColumn::make('nama'),
-                TextColumn::make('nip'),
+                TextColumn::make('nama')->sortable()->searchable(),
+                TextColumn::make('nip')->sortable(),
                 TextColumn::make('gender'),
                 TextColumn::make('alamat'),
                 TextColumn::make('kontak'),
-                TextColumn::make('email'),
+                TextColumn::make('email')->searchable(),
             ])
             ->filters([
                 //

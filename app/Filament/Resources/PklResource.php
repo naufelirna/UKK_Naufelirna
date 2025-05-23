@@ -29,27 +29,41 @@ class PklResource extends Resource
                 Select::make('siswa_id')
                     ->label('Nama Siswa')
                     ->relationship('siswa', 'nama')
-                    ->required(),
+                    ->preload()
+                    ->options(function ($record)
+                    { $query = \App\Models\Siswa::query ();
+                    // Saat create: hanya tampilkan siswa yang belum punya PKL
+                    // Saat edit: tetap tampilkan siswa yang sedang dipilih
+                    if ($record) {
+                        $query->where(function ($q) use ($record) {
+                            $q->doesntHave('pkl')
+                            ->orWhere('id', $record->siswa_id);
+                        });
+                    } else {
+                        $query->doesntHave('pkl');
+                    }
+
+                    return $query->pluck('nama', 'id');
+                    })
+                    ->required()
+                    ->disabledOn('edit'),
 
                 Select::make('industri_id')
                     ->label('Nama Industri')
                     ->relationship('industri', 'nama')
+                    ->preload()
                     ->required(),
 
                 Select::make('guru_id')
-                    ->label('Nama Guuru')
+                    ->label('Guru Pembimbing')
                     ->relationship('guru', 'nama')
                     ->required(),
 
-                DatePicker::make('tanggal_mulai')->required(),
-                DatePicker::make('tanggal_selesai')->required(),
-        
-                Select::make('status_pkl')
-                    ->options([
-                            'berlangsung' => 'Berlangsung',
-                            'selesai' => 'Selesai',
-                        ])
+                DatePicker::make('tanggal_mulai')
+                    ->label('Tanggal Mulai')
                     ->required(),
+
+                DatePicker::make('tanggal_selesai')->required(),
 
             ]);
     }
@@ -59,7 +73,7 @@ class PklResource extends Resource
         return $table
             ->columns([
                 TextColumn::make('siswa.nama')->label('Siswa')->sortable(),
-                TextColumn::make('industri.nama_industri')->label('Industri')->sortable(),
+                TextColumn::make('industri.nama')->label('Industri')->sortable(),
                 TextColumn::make('guru.nama_guru')->label('Guru')->sortable(),
                 TextColumn::make('tanggal_mulai')->date(),
                 TextColumn::make('tanggal_selesai')->date(),

@@ -15,6 +15,8 @@ use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Textarea;
+use Filament\Forms\Components\Grid;
+
 
 class IndustriResource extends Resource
 {
@@ -26,27 +28,72 @@ class IndustriResource extends Resource
     {
         return $form
             ->schema([
-                TextInput::make('nama')
-                    ->label('Nama Industri')
-                    ->required()
-                    ->maxLength(100),
+                Grid::make(2)->schema([
+                    TextInput::make('nama')
+                        ->label('Nama Industri')
+                        ->required()
+                        ->unique(ignoreRecord: true)
+                        ->afterStateUpdated(function ($state, callable $set, callable $get) {
+                            // Fungsi normalisasi
+                            $normalize = function ($text) {
+                                // Ubah ke huruf kecil
+                                $text = strtolower($text);
+                                // Hapus simbol, spasi, dan angka
+                                $text = preg_replace('/[^a-z0-9]/', '', $text);
+                                // Hilangkan awalan seperti PT, CV, Group, dll.
+                                $text = preg_replace('/\b(pt|cv|group|cv|inc|ltd)\b/', '', $text);
+                                return trim($text);
+                            };
 
-                Textarea::make('alamat')
-                    ->required()
-                    ->label('Alamat'),
+                            $normalizedInput = $normalize($state);
+                            $existingIndustri = Industri::all();
 
-                TextInput::make('bidang_usaha')
-                    ->label('Bidang usaha')
-                    ->required(),
+                            foreach ($existingIndustri as $industri) {
+                                if ($get('id') == $industri->id) continue;
 
-                TextInput::make('kontak')
-                    ->required()
-                    ->label('Kontak'),
+                                $normalizedExisting = $normalize($industri->nama);
 
-                TextInput::make('email')
-                    ->required()
-                    ->email()
-                    ->label('Email'),
+                                // Cek kesamaan string menggunakan similar_text
+                                similar_text($normalizedInput, $normalizedExisting, $percent);
+
+                                // Jika kesamaan lebih dari 80%, beri peringatan
+                                if ($percent > 80) {
+                                    Notification::make()
+                                        ->title('Nama industri terlalu mirip')
+                                        ->body("Nama \"$state\" mirip dengan \"$industri->nama\" yang sudah ada.")
+                                        ->danger()
+                                        ->persistent()
+                                        ->send();
+                                    break;
+                                }
+                            }
+                        }),
+
+                    TextInput::make('bidang_usaha')
+                        ->label('Bidang Usaha')
+                        ->required(),
+
+                    Textarea::make('alamat')
+                        ->label('Alamat')
+                        ->required()
+                        ->columnSpan(2),
+
+                    TextInput::make('kontak')
+                        ->label('Kontak')
+                        ->required()
+                        ->tel(),
+
+                    TextInput::make('email')
+                        ->label('Email')
+                        ->required()
+                        ->email()
+                        ->unique(ignoreRecord: true),
+
+                    TextInput::make('web')
+                        ->label('Website')
+                        ->url()
+                        ->nullable(),
+                ]),
             ]);
     }
 
@@ -70,7 +117,7 @@ class IndustriResource extends Resource
             ->filters([
                 //
             ])
-            ->defaultSort('nama_industri')
+            ->defaultSort('nama')
             ->actions([
                 Tables\Actions\EditAction::make(),
                 Tables\Actions\DeleteAction::make(),

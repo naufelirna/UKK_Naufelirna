@@ -54,12 +54,17 @@ class SiswaResource extends Resource
                     ->default('belum')
                     ->required(),
                 FileUpload::make('foto')
-                    ->image()
-                    ->directory('fotosiswa') // disimpan di storage/app/public/fotosiswa
-                    ->visibility('public')
-                    ->imagePreviewHeight('100')
-                    ->maxSize(1024),
-            ]);
+                ->image()
+                ->directory('fotosiswa')
+                ->visibility('public')
+                ->imagePreviewHeight('150')
+                ->loadingIndicatorPosition('left')
+                ->uploadProgressIndicatorPosition('left')
+                ->removeUploadedFileButtonPosition('right')
+                ->downloadable()
+                ->openable()
+                ->required(false),
+        ]);
         }
 
     public static function table(Table $table): Table
@@ -91,7 +96,11 @@ class SiswaResource extends Resource
                 ])
                 ->sortable(),
             
-                ImageColumn::make('foto')->circular(),
+                Tables\Columns\ImageColumn::make('foto')
+                ->disk('public')
+                ->height(50)
+                ->circular()
+                ->searchable(),
         ])
             ->filters([
                 //
@@ -119,7 +128,7 @@ class SiswaResource extends Resource
                         Excel::import(new SiswaImport, $filePath);
                         \Illuminate\Support\Facades\Storage::delete($data['file']);
                         \Filament\Notifications\Notification::make()
-                            ->title('Data guru berhasil diimpor!')
+                            ->title('Data sus= berhasil diimpor!')
                             ->success()
                             ->send();
                     })

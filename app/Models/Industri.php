@@ -10,7 +10,7 @@ class Industri extends Model
     use HasFactory;
 
     protected $fillable = [
-        'nama', 'bidang_usaha', 'alamat', 'kontak', 'email', 'guru_pembimbing',
+        'nama', 'bidang_usaha', 'alamat', 'kontak', 'email', 'web',
     ];
 
     public function pkls()

@@ -10,7 +10,7 @@ class Pkl extends Model
     use HasFactory;
 
     protected $fillable = [
-        'siswa_id', 'industri_id', 'guru_id', 'mulai', 'selesai',
+        'siswa_id', 'industri_id', 'guru_id', 'tanggal_mulai', 'tanggal_selesai',
     ];
 
     public function siswa()
@@ -26,5 +26,19 @@ class Pkl extends Model
     public function guru()
     {
         return $this->belongsTo(Guru::class);
+    }
+    //booted itu trigger laravel, 
+    public static function booted(): void {
+        static::creating(function (Pkl $pkl) {
+            if (self::where('siswa_id', $pkl->siswa_id)->exists()) {
+                throw new \Exception('Siswa ini sudah memiliki PKL.');
+            }
+        });
+        static::created(function (Pkl $pkl) {
+            $pkl->siswa->update(['status_pkl' => 1]); //ketika siswa update tabel pkl atau add maka status pkl akan bernilai 1 (true)
+        });
+        static::deleted(function (Pkl $pkl) {
+            $pkl->siswa->update(['status_pkl' => 0]); //ketika pkl dihapus, maka siswa akan otomatis terganti status pkl nya
+        });
     }
 }

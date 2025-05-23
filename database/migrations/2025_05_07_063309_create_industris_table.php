@@ -18,9 +18,9 @@ return new class extends Migration
             $table->text('alamat');
             $table->string('kontak');
             $table->string('email');
-            $table->string('guru_pembimbing'); // bisa juga foreign key ke guru
+            $table->string('web');
             $table->timestamps();
-        });        
+        });
     }
 
     /**
