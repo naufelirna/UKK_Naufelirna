@@ -12,6 +12,7 @@ use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\Select;
@@ -128,7 +129,7 @@ class SiswaResource extends Resource
                         Excel::import(new SiswaImport, $filePath);
                         \Illuminate\Support\Facades\Storage::delete($data['file']);
                         \Filament\Notifications\Notification::make()
-                            ->title('Data sus= berhasil diimpor!')
+                            ->title('Data siswa berhasil diimpor!')
                             ->success()
                             ->send();
                     })

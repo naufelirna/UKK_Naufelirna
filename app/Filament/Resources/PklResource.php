@@ -12,6 +12,7 @@ use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+
 use Filament\Tables\Columns\TextColumn;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\DatePicker;
@@ -28,7 +29,8 @@ class PklResource extends Resource
             ->schema([
                 Select::make('siswa_id')
                     ->label('Nama Siswa')
-                    ->relationship('siswa', 'nama')
+                    ->relationship('siswa', 'nama') //ngambil field dari tabel siswa, dropdown = field name siswa
+                                                                            //model utama (pkl) punya relasi ke model siswa. relasinya App\Models\Pkl
                     ->preload()
                     ->options(function ($record)
                     { $query = \App\Models\Siswa::query ();
@@ -50,7 +52,7 @@ class PklResource extends Resource
 
                 Select::make('industri_id')
                     ->label('Nama Industri')
-                    ->relationship('industri', 'nama')
+                    ->relationship('industri', 'nama') //mengambil field name dari tabel industri, dropdown = field name industri 
                     ->preload()
                     ->required(),
 
@@ -61,10 +63,14 @@ class PklResource extends Resource
 
                 DatePicker::make('tanggal_mulai')
                     ->label('Tanggal Mulai')
+                    ->maxDate(now()->addYears(5)) // input maks tanggal hari ini sampai 5 tahun dari hari ini
                     ->required(),
 
-                DatePicker::make('tanggal_selesai')->required(),
-
+                DatePicker::make('tanggal_selesai')
+                    ->label('Tanggal Selesai')
+                    ->maxDate(now()->addYears(5)) // input maks tanggal hari ini sampai 5 tahun dari hari ini
+                    ->after('tanggal_mulai') //tanggal selesai adalah setelah tanggal mulai
+                    ->required(),
             ]);
     }
 

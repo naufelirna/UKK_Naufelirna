@@ -12,6 +12,7 @@ use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+
 use Filament\Tables\Columns\TextColumn;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Textarea;
@@ -122,11 +123,35 @@ class IndustriResource extends Resource
                 Tables\Actions\EditAction::make(),
                 Tables\Actions\DeleteAction::make(),
             ])
-            ->bulkActions([
-                Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
-                ]),
+             ->bulkActions([
+                    Tables\Actions\DeleteBulkAction::make()
+                        ->action(function (\Illuminate\Support\Collection $records){
+                            //ini cara hapusnya dari select box yah
+                            foreach ($records as $record){
+                                static::deleteIndustri($record);
+                            }
+                        })
             ]);
+    }
+
+   protected static function deleteIndustri($record){
+        if($record->pkls()->exists()){
+            \Filament\Notifications\Notification::make()
+                ->title('Gagal menghapus industri')
+                ->body('Industri ini masih digunakan untuk PKL')
+                ->danger()
+                ->send();
+            return false;
+        }
+
+        $record->delete();
+        \Filament\Notifications\Notification::make()
+            ->title('Berhasil menghapus industri')
+            ->body('Industri berhasil dihapus')
+            ->success()
+            ->send();
+
+        return true;
     }
 
     public static function getRelations(): array

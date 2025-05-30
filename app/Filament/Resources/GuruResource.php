@@ -12,6 +12,8 @@ use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Illuminate\Validation\Rule;
+
 use Filament\Tables\Columns\TextColumn;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Select;
@@ -27,6 +29,10 @@ class GuruResource extends Resource
 {
     protected static ?string $model = Guru::class;
 
+     protected static ?string $navigationLabel = 'Data Guru';
+
+     protected static ?string $pluralLabel = 'Daftar Data Guru';
+
     protected static ?string $navigationIcon = 'heroicon-o-academic-cap';
 
     public static function form(Form $form): Form
@@ -35,13 +41,16 @@ class GuruResource extends Resource
             ->schema([
                 Forms\Components\TextInput::make('nama')
                     ->label('Nama')
+                    ->placeholder('Nama Guru')
                     ->required()
                     ->maxLength(255),
 
                Forms\Components\TextInput::make('nip')
                     ->label('NIP')
+                    ->placeholder('NIP Guru')
                     ->required()
                     ->maxLength(18)
+                    ->validationMessages(['unique'=> 'NIP sudah digunakan'])
                     ->rules(fn ($record) => [
                         'digits_between:1,18',
                         Rule::unique('gurus', 'nip')->ignore($record?->id),
@@ -53,11 +62,14 @@ class GuruResource extends Resource
                         'L' => 'Laki-laki',
                         'P' => 'Perempuan',
                     ])
+                    ->native(false)
+                    ->columnSpan(2)
                     ->required(),
 
                 Forms\Components\TextInput::make('email')
                 ->required()
                 ->label('Email')
+                ->placeholder('Email Guru')
                 ->helperText('Gunakan format: <nama>@gurusija.com')
                 ->rules(fn ($record) => [
                     'regex:/^[a-zA-Z0-9._%+-]+@gurusija\.com$/',
@@ -69,11 +81,14 @@ class GuruResource extends Resource
 
                 Forms\Components\TextInput::make('alamat')
                     ->label('Alamat')
+                    ->placeholder('Alamat Guru')
+                    ->columnSpan(2)
                     ->required()
                     ->maxLength(255),
 
                     TextInput::make('kontak')
                     ->label('Kontak')
+                    ->placeholder('Kontak Guru')
                     ->required()
                     ->maxLength(20)
                     ->tel(),
@@ -96,6 +111,7 @@ class GuruResource extends Resource
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
+                Tables\Actions\DeleteAction::make(),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
@@ -127,11 +143,8 @@ class GuruResource extends Resource
 
     public static function getRelations(): array
     {
-        return [
-            //
-        ];
+        return [];
     }
-
     public static function getPages(): array
     {
         return [
