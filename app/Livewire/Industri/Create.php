@@ -3,18 +3,19 @@
 namespace App\Livewire\Industri;
 
 use Livewire\Component;
-use App\Livewire\Industri;
+use App\Models\Industri; //import model industri biar bisa dipake buat create data
 
 class Create extends Component
 {
-    public $nama, $bidang_usaha, $alamat, $kontak, $email, $website;
+    //properti buat nammpung input dari form (wire:model)
+    public $nama, $bidang_usaha, $alamat, $kontak, $email, $web;
 
     public function create(){
-        $this->validate([ //validasi semua input
-            //validasi disesuaikan dari wire:model di blade
+        //validasi input sesuai aturan
+        $this->validate([ 
             'nama' => 'required',
             'bidang_usaha' => 'required',
-            'website' => 'required|url',
+            'web' => 'nullable|url',
             'alamat' => 'required',
             'kontak' => 'required|numeric',
             'email' => 'required|email',
@@ -23,13 +24,15 @@ class Create extends Component
         Industri::create([
                 'nama' => $this->nama,
                 'bidang_usaha' => $this->bidang_usaha,
-                'website' => $this->website,
+                'web' => $this->web,
                 'alamat' => $this->alamat,
                 'kontak' => $this->kontak,
                 'email' => $this->email,
             ]);
             
+            //flash message sukses
             session()->flash('success', 'Industri berhasil ditambahkan');
+            //redirect ke halaman data industri setelah sukses nambahin data
             return redirect('/dataIndustri');
     }
     

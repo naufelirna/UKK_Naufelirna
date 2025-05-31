@@ -8,30 +8,32 @@ use App\Models\Siswa;
 class Index extends Component
 {
     public $search = '';
-    public $selected_abjad =[];
+    public $selected_abjad = '';  //ubah ke string, bukan array
 
     public function render()
     {
-        $siswas = Siswa::query();
+        $query = Siswa::query(); //mulai query builder
 
-        if (!empty($this->search)){ //cek kalau $this not empty, jadi kalau kolom kosong dia ga filter apa2
-            $siswas->where(function($query){ //nge-group semua filter pencarian.
-                $query->where('nama', 'like', '%' . $this->search . '%')
-                    ->orWhere('nis', 'like', '%' . $this->search . '%')
-                    ->orWhere('alamat', 'like', '%' . $this->search . '%')
-                    ->orWhere('kontak', 'like', '%' . $this->search . '%')
-                    ->orWhere('email', 'like', '%' . $this->search . '%');
+        if (!empty($this->search)) {
+            $query->where(function($q){
+                $q->where('nama', 'like', '%' . $this->search . '%')
+                  ->orWhere('nis', 'like', '%' . $this->search . '%')
+                  ->orWhere('alamat', 'like', '%' . $this->search . '%')
+                  ->orWhere('kontak', 'like', '%' . $this->search . '%')
+                  ->orWhere('email', 'like', '%' . $this->search . '%');
             });
         }
 
-        //sort abjad
-        if ($this->selected_abjad){
-            if ($this->selected_abjad === 'Abjad : A-Z'){
-                $siswas->orderBy('nama', 'asc'); //ascending, kecil ke besar A-Z 1-100
-            } elseif ($this->selected_abjad){
-                $siswas->orderBy('nama', 'desc'); //descending, kebalikan
+        if ($this->selected_abjad) {
+            if ($this->selected_abjad === 'Abjad : A-Z') {
+                $query->orderBy('nama', 'asc');
+            } else {
+                $query->orderBy('nama', 'desc');
             }
         }
 
+        $siswas = $query->get(); //eksekusi query, dapatkan collection
+
+        return view('livewire.siswa.index', compact('siswas'));
     }
 }

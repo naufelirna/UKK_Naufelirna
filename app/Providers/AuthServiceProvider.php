@@ -4,7 +4,7 @@ namespace App\Providers;
 
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
 use Illuminate\Support\Facades\Gate;
-// tambahkan use model dan policy jika perlu
+// tambah mmodel dan policy yg pengen dihubungin
 use App\Models\Laporan;
 use App\Policies\LaporanPolicy;
 
@@ -12,10 +12,11 @@ class AuthServiceProvider extends ServiceProvider
 {
     /**
      * The policy mappings for the application.
+     * contoh: pas pake laporan::class, laravel ntar tau
+     * harus pake laporanpolicy buat ngeek izin akses
      */
     protected $policies = [
         Laporan::class => LaporanPolicy::class,
-        // daftarkan model lain dan policy-nya jika perlu
     ];
 
     /**
@@ -23,6 +24,6 @@ class AuthServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        $this->registerPolicies();
+        $this->registerPolicies(); //daftarin semua policy yg ada di $policies
     }
 }

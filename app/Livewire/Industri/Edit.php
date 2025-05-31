@@ -10,6 +10,8 @@ class Edit extends Component
     public $industriId;
     public $nama, $bidang_usaha, $alamat, $kontak, $email, $website;
 
+    //mount dipanggil pas komponen pertama kali diload
+    //dipake buat ngisi form dgn data yg sudah ada berdasarkan $id
     public function mount($id){
         $this->industriId = $id;
         $industri = Industri::findOrFail($id);
@@ -20,7 +22,7 @@ class Edit extends Component
         $this->alamat = $industri->alamat;
         $this->kontak = $industri->kontak;
         $this->email = $industri->email;
-        $this->website = $industri->website;
+        $this->web = $industri->web;
     }
 
     public function update(){
@@ -32,7 +34,7 @@ class Edit extends Component
             'alamat' => 'required|string|max:400',
             'kontak' => 'required|numeric',
             'email' => 'required|email|unique:industris,email,'. $industri->id,
-            'website' => 'required|url|max:255',
+            'web' => 'nullable|url|max:255',
         ]);
 
         $industri->update([
@@ -41,7 +43,7 @@ class Edit extends Component
             'alamat' => $this->alamat,
             'kontak' => $this->kontak,
             'email' => $this->email,
-            'website' => $this->website,
+            'web' => $this->website,
         ]);
 
         session()->flash('success', 'Industri berhasil diperbarui');

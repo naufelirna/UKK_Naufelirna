@@ -1,29 +1,20 @@
 <div class="px-8">
+    <!-- Sort & Search DI ATAS TABEL -->
     <div class="flex justify-end items-center mb-6 mt-6">
-<!-- sort -->
-        <div class="flex flex-col sm:flex-row gap-4">
-            <!-- Dropdown Sort Abjad -->
-            <div class="relative">
-                <label for="sortAbjad" class="sr-only">Urutkan Abjad</label>
-                <select id="sortAbjad" wire:model.live="selected_abjad"
-                    class="appearance-none block w-48 pl-3 pr-8 py-2 text-sm border border-gray-300 rounded-lg bg-white text-gray-900 focus:ring-blue-500 focus:border-blue-500">
-                    <option value="">Sortir Nama</option>
-                    <option value="Abjad : A-Z">Abjad : A-Z</option>
-                    <option value="Abjad : Z-A">Abjad : Z-A</option>
-                </select>
-                <!-- Icon panah bawah -->
-                <div class="pointer-events-none absolute inset-y-0 right-3 flex items-center text-gray-400">
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2"
-                        viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round"
-                            d="M19 9l-7 7-7-7" />
-                    </svg>
-                </div>
-            </div>
+        <!-- Dropdown Sort -->
+        <div>
+            <label for="sortAbjad" class="sr-only">Urutkan Abjad</label>
+            <select id="sortAbjad" wire:model.live="selected_abjad"
+                class="block w-44 p-2 text-sm border border-blue-300 rounded-lg bg-white text-gray-900 focus:ring-purple-500 focus:border-purple-500">
+                <option value="">Urutkan nama</option>
+                <option value="Abjad : A-Z">Abjad : A-Z</option>
+                <option value="Abjad : Z-A">Abjad : Z-A</option>
+            </select>
+        </div>
 
 
         <!-- Form Search -->
-        <form class="flex items-center">
+         <form class="flex items-center">
             <label for="default-search" class="sr-only">Search</label>
             <div class="relative">
                 <div class="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none">
@@ -36,7 +27,7 @@
                 <input type="search" id="default-search" name="search"
                     wire:model.live="search"
                     class="block w-64 p-2 ps-10 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500"
-                    placeholder="Cari data Guru" />
+                    placeholder="Cari data Siswa" />
             </div>
         </form>
     </div>
@@ -55,8 +46,8 @@
 
     <!-- Table PKL -->
     <div class="relative overflow-x-auto shadow-md sm:rounded-lg">
-        <table class="w-full text-sm text-left rtl:text-right text-gray-500">
-            <thead class="text-xs text-gray-700 uppercase bg-gray-50">
+        <table class="w-full text-sm text-left rtl:text-right text-black-500">
+           <thead style="background-color: #1E3A8A; color: white;" class="text-xs uppercase">
                 <tr>
                     <th class="px-6 py-3">No</th>
                     <th class="px-6 py-3">Nama</th>
@@ -69,9 +60,11 @@
             <tbody>
                 @forelse ($siswas as $key => $siswa)
                     <tr
-                        class="bg-white border-b border-gray-200 hover:bg-gray-50">
+                        class="background-color: white; border-bottom: 1px solid #BFDBFE;"
+                        onmouseover="this.style.backgroundColor='#A78BFA';"
+                        onmouseout="this.style.backgroundColor='white';">
                         <th scope="row"
-                            class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap">
+                            style="padding: 1rem; font-weight: 600; color: #1E3A8A;">
                             {{ $key + 1 }}
                         </th>
                         <td class="px-6 py-4">
@@ -97,7 +90,7 @@
                     </tr>
                 @empty
                     <tr>
-                        <td colspan="9" class="text-center py-4 text-gray-500">Tidak ada siswa terdaftar</td>
+                        <td colspan="9" style="text-align: center; padding: 1rem; color: gray;">Tidak ada siswa terdaftar</td>
                     </tr>
                 @endforelse
             </tbody>

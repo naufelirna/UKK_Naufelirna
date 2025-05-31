@@ -35,7 +35,6 @@ class Index extends Component
 
         $pkls = $pklsQuery->get();
 
-        // Ambil semua data siswa, guru, industri untuk dropdown (tanpa filter pencarian)
         $siswas = Siswa::all();
         $gurus = Guru::all();
         $industris = Industri::all();

@@ -20,7 +20,7 @@ class Index extends Component
                     ->orWhere('alamat', 'like', '%' . $this->search . '%')
                     ->orWhere('kontak', 'like', '%' . $this->search . '%')
                     ->orWhere('email', 'like', '%' . $this->search . '%')
-                    ->orWhere('website', 'like', '%' . $this->search . '%');
+                    ->orWhere('web', 'like', '%' . $this->search . '%');
             });
         }
 

@@ -15,9 +15,16 @@ class DatabaseSeeder extends Seeder
     {
         // User::factory(10)->create();
 
-        User::factory()->create([
-            'name' => 'Test User',
-            'email' => 'test@example.com',
+        User::updateOrCreate(
+        ['email' => 'coba@example.com'], // kondisi pencarian
+        [
+            'name' => 'coba',
+            'password' => bcrypt('password'), // default password
         ]);
+
+        $this->call(SiswaSeeder::class);
+        $this->call(GuruSeeder::class);
+        $this->call(IndustriSeeder::class);
+        $this->call(PklSeeder::class);
     }
 }

@@ -2,14 +2,16 @@
     <div class="flex justify-end items-center mb-6 mt-6">
 <!-- sort -->
         <div>
-            <label for="sortAbjad" class="sr-only">Urutkan</label>
+            <label for="sortAbjad" class="sr-only">Urutkan Abjad</label>
             <select id="sortAbjad" wire:model.live="selected_abjad"
-                class="block w-44 p-2 text-sm border border-gray-300 rounded-lg bg-white text-gray-900 focus:ring-blue-500 focus:border-blue-500">
+                class="block w-44 p-2 text-sm border border-blue-300 rounded-lg bg-white text-gray-900 focus:ring-purple-500 focus:border-purple-500">
                 <option value="">Urutkan nama</option>
                 <option value="Abjad : A-Z">Abjad : A-Z</option>
                 <option value="Abjad : Z-A">Abjad : Z-A</option>
             </select>
         </div>
+
+
         <!-- Form Search -->
         <form class="flex items-center">
             <label for="default-search" class="sr-only">Search</label>
@@ -43,8 +45,8 @@
 
     <!-- Table PKL -->
     <div class="relative overflow-x-auto shadow-md sm:rounded-lg">
-        <table class="w-full text-sm text-left rtl:text-right text-gray-500">
-            <thead class="text-xs text-gray-700 uppercase bg-gray-50">
+        <table class="w-full text-sm text-left rtl:text-right text-black-500">
+           <thead style="background-color: #1E3A8A; color: white;" class="text-xs uppercase">
                 <tr>
                     <th class="px-6 py-3">No</th>
                     <th class="px-6 py-3">Nama</th>
@@ -56,12 +58,14 @@
                 </tr>
             </thead>
             <tbody>
-                @forelse ($gurus as $key => $guru)
+                @forelse ($gurus as $guru)
                     <tr
-                        class="bg-white border-b border-gray-200 hover:bg-gray-50">
+                        class="background-color: white; border-bottom: 1px solid #BFDBFE;"
+                        onmouseover="this.style.backgroundColor='#A78BFA';"
+                        onmouseout="this.style.backgroundColor='white';">
                         <th scope="row"
-                            class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap">
-                            {{ $key + 1 }}
+                            style="padding: 1rem; font-weight: 600; color: #1E3A8A;">
+                            {{ $loop->iteration }}
                         </th>
                         <td class="px-6 py-4">
                             {{ $guru->nama }}
@@ -89,7 +93,7 @@
                     </tr>
                 @empty
                     <tr>
-                        <td colspan="9" class="text-center py-4 text-gray-500">Tidak ada siswa terdaftar</td>
+                        <td colspan="9" style="text-align: center; padding: 1rem; color: gray;">Tidak ada guru terdaftar</td>
                     </tr>
                 @endforelse
             </tbody>

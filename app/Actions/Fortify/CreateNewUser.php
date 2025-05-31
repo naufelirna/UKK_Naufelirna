@@ -16,7 +16,7 @@ class CreateNewUser implements CreatesNewUsers
 
     /**
      * Validate and create a newly registered user.
-     *
+     * digunakan untuk memproses pendaftaran user baru
      * @param  array<string, string>  $input
      */
     public function create(array $input): User
@@ -24,13 +24,14 @@ class CreateNewUser implements CreatesNewUsers
         Validator::make($input, [
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users,email'], //ditambah unique:users,email
-            'password' => $this->passwordRules(),
+            'password' => $this->passwordRules(), //password divalidasi berdasarkan aturan dr trait passwordvalidationrules
             'terms' => Jetstream::hasTermsAndPrivacyPolicyFeature() ? ['accepted', 'required'] : '',
         ])->validate();
 
 
-        //kalo user regisnya pake email yang gaada di tabel, jadi
+        //ngecek email yg dimasukin ada apa engga di tabel siswa
         if (!Siswa::where('email', $input['email'])->exists()){
+            // kalo gaada, kasi error kaya gini
             throw ValidationException::withMessages([
                 'email' => 'Email tidak terdaftar sebagai siswa',
             ]);
