@@ -24,7 +24,7 @@ return [
         'enabled' => true,
         'name' => 'super_admin',
         'define_via_gate' => false,
-        'intercept_gate' => 'before', // after
+        'intercept_gate' => 'before',
     ],
 
     'panel_user' => [
@@ -66,27 +66,23 @@ return [
     ],
 
     'exclude' => [
-        'enabled' => true,
-
+        'enabled' => false,
         'pages' => [
             'Dashboard',
         ],
-
         'widgets' => [
             'AccountWidget', 'FilamentInfoWidget',
         ],
-
         'resources' => [],
     ],
 
     'discovery' => [
-        'discover_all_resources' => false,
-        'discover_all_widgets' => false,
-        'discover_all_pages' => false,
+        'discover_all_resources' => true,
+        'discover_all_widgets' => true,
+        'discover_all_pages' => true,
     ],
 
     'register_role_policy' => [
         'enabled' => true,
     ],
-
 ];

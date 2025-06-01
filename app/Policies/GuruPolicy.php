@@ -11,7 +11,7 @@ class GuruPolicy
     use HandlesAuthorization;
 
     /**
-     * Determine whether the user can VIEW ANY models.
+     * Determine whether the user can view any models.
      */
     public function viewAny(User $user): bool
     {
@@ -19,7 +19,7 @@ class GuruPolicy
     }
 
     /**
-     * Determine whether the user can VIEW the model.
+     * Determine whether the user can view the model.
      */
     public function view(User $user, Guru $guru): bool
     {
@@ -27,7 +27,7 @@ class GuruPolicy
     }
 
     /**
-     * Determine whether the user can CREATE models.
+     * Determine whether the user can create models.
      */
     public function create(User $user): bool
     {
@@ -35,7 +35,7 @@ class GuruPolicy
     }
 
     /**
-     * Determine whether the user can UPDATE/NGEDIT the model.
+     * Determine whether the user can update the model.
      */
     public function update(User $user, Guru $guru): bool
     {
@@ -43,7 +43,7 @@ class GuruPolicy
     }
 
     /**
-     * Determine whether the user can DELETE the model.
+     * Determine whether the user can delete the model.
      */
     public function delete(User $user, Guru $guru): bool
     {
@@ -51,7 +51,7 @@ class GuruPolicy
     }
 
     /**
-     * Determine whether the user can BULK/HAPUS BANYAK/SEKALIGUS delete.
+     * Determine whether the user can bulk delete.
      */
     public function deleteAny(User $user): bool
     {
@@ -59,7 +59,7 @@ class GuruPolicy
     }
 
     /**
-     * Determine whether the user can PERMANENTLY DELETE.
+     * Determine whether the user can permanently delete.
      */
     public function forceDelete(User $user, Guru $guru): bool
     {
@@ -67,7 +67,7 @@ class GuruPolicy
     }
 
     /**
-     * Determine whether the user can PERMANENTLY BULK DELETE.
+     * Determine whether the user can permanently bulk delete.
      */
     public function forceDeleteAny(User $user): bool
     {
@@ -75,7 +75,7 @@ class GuruPolicy
     }
 
     /**
-     * Determine whether the user can RESTORE.
+     * Determine whether the user can restore.
      */
     public function restore(User $user, Guru $guru): bool
     {
@@ -83,7 +83,7 @@ class GuruPolicy
     }
 
     /**
-     * Determine whether the user can BULK RESTORE.
+     * Determine whether the user can bulk restore.
      */
     public function restoreAny(User $user): bool
     {
@@ -91,7 +91,7 @@ class GuruPolicy
     }
 
     /**
-     * Determine whether the user can REPLICATE.
+     * Determine whether the user can replicate.
      */
     public function replicate(User $user, Guru $guru): bool
     {
@@ -99,7 +99,7 @@ class GuruPolicy
     }
 
     /**
-     * Determine whether the user can REORDER.
+     * Determine whether the user can reorder.
      */
     public function reorder(User $user): bool
     {

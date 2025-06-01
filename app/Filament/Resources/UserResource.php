@@ -18,6 +18,13 @@ class UserResource extends Resource
     protected static ?string $model = User::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-user';
+    
+    protected static ?string $navigationGroup = 'Administration';
+    
+    public static function canViewAny(): bool
+    {
+        return true;
+    }
 
     public static function form(Form $form): Form
     {
@@ -35,9 +42,9 @@ class UserResource extends Resource
                 Forms\Components\TextInput::make('password')
                     ->password()
                     ->label('Password')
-                    ->required(fn (string $context): bool => $context === 'create') // required saat create saja
-                    ->dehydrateStateUsing(fn ($state) => bcrypt($state)) // hash otomatis
-                    ->dehydrated(fn ($state) => filled($state)) // disimpan hanya kalau diisi
+                    ->required(fn (string $context): bool => $context === 'create')
+                    ->dehydrateStateUsing(fn ($state) => bcrypt($state))
+                    ->dehydrated(fn ($state) => filled($state))
                     ->maxLength(255),
 
                 Forms\Components\Select::make('roles')
@@ -61,23 +68,8 @@ class UserResource extends Resource
                     ->formatStateUsing(function ($state, $record) {
                         return $record->getRoleNames()->join(',');
                     })  
-                // Tables\Columns\TextColumn::make('email_verified_at')
-                //     ->dateTime()
-                //     ->sortable(),
-                // Tables\Columns\TextColumn::make('two_factor_confirmed_at')
-                //     ->dateTime()
-                //     ->sortable(),
-                // Tables\Columns\TextColumn::make('created_at')
-                //     ->dateTime()
-                //     ->sortable()
-                //     ->toggleable(isToggledHiddenByDefault: true),
-                // Tables\Columns\TextColumn::make('updated_at')
-                //     ->dateTime()
-                //     ->sortable()
-                //     ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([
-                //
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
