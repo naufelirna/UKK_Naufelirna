@@ -4,15 +4,26 @@
         <div class="flex justify-between h-16">
             <div class="flex">
                 <!-- Logo -->
-                <div class="shrink-0 flex items-center">
-    <a href="{{ route('dashboard') }}">
-        <div class="flex items-center">
-            <a href="/" class="text-xl font-bold bg-gradient-to-r from-blue-500 to-purple-600 text-transparent bg-clip-text">
-                PKL <span>STEMBAYO</span>
-            </a>
+                <div class="flex items-center justify-center h-screen bg-gray-100">
+            <a href="/" style="
+    font-size: 1.25rem; /* kira-kira setara text-xl */
+    font-weight: bold;
+    background: linear-gradient(to right, #3b82f6, #8b5cf6);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    color: transparent;
+    text-decoration: none;
+  ">
+    PKL <span style="
+      background: inherit;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      color: transparent;
+    ">STEMBAYO</span>
+  </a>
         </div>
-    </a>
-</div>
 
 
                 <!-- Navigation Links -->
@@ -106,9 +117,9 @@
                                 </button>
                             @else
                                 <span class="inline-flex rounded-md">
-                                    <button type="button" class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-gray-300 bg-[#DEE4E9] hover:text-white hover:bg-gray-700 focus:outline-none focus:bg-gray-700 focus:text-white transition ease-in-out duration-150">
-    <span class="text-purple-600 font-semibold">{{ Auth::user()->name }}</span>
-    <img class="h-8 w-8 rounded-full ml-2" src="https://ui-avatars.com/api/?name={{ urlencode(Auth::user()->name) }}&background=indigo&color=fff" alt="Profile">
+                                    <button type="button" class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md bg-[#DEE4E9] hover:text-white hover:bg-gray-700 ...">
+    <span class="text-purple-600 font-semibold mr-2">{{ Auth::user()->name }}</span>
+    <img class="h-8 w-8 rounded-full" src="https://ui-avatars.com/api/?name={{ urlencode(Auth::user()->name) }}&background=indigo&color=fff" alt="Profile">
     <svg class="ms-2 -me-0.5 size-4" ...></svg>
 </button>
 

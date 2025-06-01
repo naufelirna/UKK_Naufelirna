@@ -8,11 +8,17 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Fortify\TwoFactorAuthenticatable;
 use Laravel\Jetstream\HasProfilePhoto;
+use Laravel\Jetstream\Http\Controllers\Inertia\Concerns\ConfirmsTwoFactorAuthentication;
 use Laravel\Sanctum\HasApiTokens;
+use Spatie\Permission\Traits\HasRoles;
+
 
 class User extends Authenticatable
 {
     use HasApiTokens;
+    use HasRoles;
+    use HasProfilePhoto;
+    use ConfirmsTwoFactorAuthentication;
 
     /** @use HasFactory<\Database\Factories\UserFactory> */
     use HasFactory;
