@@ -71,6 +71,12 @@ class PklResource extends Resource
                     ->maxDate(now()->addYears(5)) // input maks tanggal hari ini sampai 5 tahun dari hari ini
                     ->after('tanggal_mulai') //tanggal selesai adalah setelah tanggal mulai
                     ->required(),
+
+                Select::make('status_pkl')
+                    ->label('Status PKL')
+                    ->options([
+                        'berlangsung' => 'Berlangsung',
+                         'selesai' => 'Selesai'])
             ]);
     }
 

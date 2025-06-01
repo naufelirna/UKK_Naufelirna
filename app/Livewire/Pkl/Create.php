@@ -56,7 +56,7 @@ class Create extends Component
         try{
             $siswa = Siswa::findOrFail($this->siswa_id);
             //ngecek uda perna lapor apa belum
-            if ($siswa->status_lapor_pkl){
+            if ($siswa->status_pkl){
                 DB::rollBack();
                 //kalo uda lapor, batalkan transaksi dan kemmbalikan data ke kondisi awal
                 session()->flash('error', 'Laporan Dibatalkan: Siswa ini sudah memiliki data PKL.');
@@ -75,7 +75,7 @@ class Create extends Component
 
             //setelah berhasil buat data pkl, update status siswa bahwa uda lapor pkl
             $siswa->update([
-                'status_lapor_pkl' => true
+                'status_pkl' => true
             ]);
 
 

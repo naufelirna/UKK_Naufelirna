@@ -3,28 +3,27 @@
 namespace Database\Seeders;
 
 use App\Models\User;
-// use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
+use Spatie\Permission\Models\Role;
+use Illuminate\Support\Facades\Hash;
 
 class DatabaseSeeder extends Seeder
 {
-    /**
-     * Seed the application's database.
-     */
     public function run(): void
     {
-        // User::factory(10)->create();
-
-        User::updateOrCreate(
-        ['email' => 'coba@example.com'], // kondisi pencarian
-        [
-            'name' => 'coba',
-            'password' => bcrypt('password'), // default password
-        ]);
-
-        $this->call(SiswaSeeder::class);
-        $this->call(GuruSeeder::class);
-        $this->call(IndustriSeeder::class);
-        $this->call(PklSeeder::class);
+        $superAdminRole = Role::firstOrCreate(['name' => 'super_admin']);
+        
+        $admin = User::firstOrCreate(
+            ['email' => 'coba@example.com'],
+            [
+                'name' => 'coba',
+                'password' => Hash::make('password123'),
+                'email_verified_at' => now(),
+            ]
+        );
+        
+        $admin->assignRole($superAdminRole);
+        
+        $this->command->info('Admin user created with super_admin role!');
     }
 }

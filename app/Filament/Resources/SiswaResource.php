@@ -48,8 +48,7 @@ class SiswaResource extends Resource
                 TextInput::make('email')->required()->email(),
                 Select::make('status_pkl')
                     ->options([
-                        'belum' => 'Belum',
-                        'sedang' => 'Sedang',
+                        'berlangsung' => 'berlangsung',
                         'selesai' => 'Selesai',
                     ])
                     ->default('belum')
@@ -91,8 +90,7 @@ class SiswaResource extends Resource
             Tables\Columns\BadgeColumn::make('status_pkl')
                 ->label('Status PKL')
                 ->colors([
-                    'secondary' => 'belum',
-                    'warning' => 'sedang',
+                    'warning' => 'berlangsung',
                     'success' => 'selesai',
                 ])
                 ->sortable(),

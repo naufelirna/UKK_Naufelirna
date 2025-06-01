@@ -10,7 +10,7 @@ class Pkl extends Model
     use HasFactory;
 
     protected $fillable = [
-        'siswa_id', 'industri_id', 'guru_id', 'tanggal_mulai', 'tanggal_selesai',
+        'siswa_id', 'industri_id', 'guru_id', 'tanggal_mulai', 'tanggal_selesai', 'status_pkl'
     ];
 
     public function siswa()

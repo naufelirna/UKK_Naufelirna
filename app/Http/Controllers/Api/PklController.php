@@ -29,8 +29,8 @@ class PklController extends Controller
         $pkl->siswa_id = $request->siswa_id;
         $pkl->guru_id = $request->guru_id;
         $pkl->industri_id = $request->industri_id;
-        $pkl->mulai = $request->mulai;
-        $pkl->selesai = $request->selesai;
+        $pkl->tanggal_mulai = $request->tanggal_mulai;
+        $pkl->tanggal_selesai = $request->tanggal_selesai;
         $pkl->save(); // menyimpan ke database
         return response()->json($pkl, 200);
     }
