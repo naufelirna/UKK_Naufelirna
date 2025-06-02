@@ -4,7 +4,7 @@
         <div class="flex justify-between h-16">
             <div class="flex">
                 <!-- Logo -->
-                <div class="flex items-center justify-center h-screen bg-gray-100">
+                <div class="flex items-center">
             <a href="/" style="
     font-size: 1.25rem; /* kira-kira setara text-xl */
     font-weight: bold;

@@ -55,6 +55,14 @@ class Create extends Component
 
         try{
             $siswa = Siswa::findOrFail($this->siswa_id);
+
+            // ✅ Cek apakah data PKL sudah ada
+                $existing = Pkl::where('siswa_id', $this->siswa_id)->first();
+                if ($existing) {
+                    session()->flash('error', 'Data PKL sudah terdaftar, penambahan data ulang tidak diperbolehkan');
+                    return redirect('/dataPkl');
+                }
+
             //nyimpen data ke tabel pkl, butuh model pkl
             Pkl::create([
                 'siswa_id' => $this->siswa_id,

@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <title>PKL STEMBAYO</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins&display=swap" rel="stylesheet">
     <style>
     html {
       scroll-behavior: smooth;
@@ -16,16 +17,17 @@
     <!-- Navbar -->
 <nav style="display: flex; justify-content: space-between; align-items: center; padding: 16px 32px; background-color: #ffffff; border-bottom: 1px solid #e0e0e0;">
     <div style="
-        font-size: 20px;
-        font-weight: bold;
-        background: linear-gradient(to right, #3b82f6, #8b5cf6);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-        background-clip: text;
-        color: transparent;
-    ">
-        PKL STEMBAYO
-    </div>
+    font-size: 20px;
+    font-weight: bold;
+    background: linear-gradient(to right, #3b82f6, #8b5cf6);
+    background-clip: text;
+    -webkit-background-clip: text;
+    color: transparent;
+    -webkit-text-fill-color: transparent;
+">
+    PKL STEMBAYO
+</div>
+
     <div>
         <a href="#tentang" style="margin-right: 20px; text-decoration: none; color: #1c1c1c;">Tentang</a>
         <a href="/register" style="text-decoration: none; color: #a58cf0; font-weight: bold;">Register</a>

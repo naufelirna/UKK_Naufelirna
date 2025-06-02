@@ -21,7 +21,7 @@ class SiswaSeeder extends Seeder
                 'alamat' => 'Kasihan, Bantul',
                 'kontak' => '08112657217',
                 'email' => 'mtiaraskinasih@gmail.com',
-                'status_pkl' => 'belum',
+                'status_pkl' => 'false',
             ],
             [
                 'nama' => 'NABILA NUR AZIZAH',
@@ -30,7 +30,7 @@ class SiswaSeeder extends Seeder
                 'alamat' => 'Cangkringan, Sleman',
                 'kontak' => '081321817238',
                 'email' => 'nabilanura@gmail.com',
-                'status_pkl' => 'belum',
+                'status_pkl' => 'false',
             ],
             [
                 'nama' => 'MUHAMMAD AKBAR AMAANULLAAH',
@@ -39,7 +39,7 @@ class SiswaSeeder extends Seeder
                 'alamat' => 'Serang, Banten',
                 'kontak' => '085198542434',
                 'email' => 'muhammadakbaramaanullaah@gmail.com',
-                'status_pkl' => 'belum',
+                'status_pkl' => 'false',
             ],
             [
                 'nama' => 'NAUFELIRNA SUBKHI RAMADHANI',
@@ -48,7 +48,7 @@ class SiswaSeeder extends Seeder
                 'alamat' => 'Ngemplak, Sleman',
                 'kontak' => '089671421234',
                 'email' => 'adzanaufel705@gmail.com',
-                'status_pkl' => 'belum',
+                'status_pkl' => 'false',
             ],
             [
                 'nama' => 'THARA BUNGA NOVRIYANSYAH',
@@ -57,7 +57,7 @@ class SiswaSeeder extends Seeder
                 'alamat' => 'Kasihan, Bantul',
                 'kontak' => '087834060198',
                 'email' => 'tharabnv@gmail.com',
-                'status_pkl' => 'belum',
+                'status_pkl' => 'false',
             ],
             [
                 'nama' => 'KAYSA AQILA AMTA',
@@ -66,7 +66,7 @@ class SiswaSeeder extends Seeder
                 'alamat' => 'Turi, Sleman',
                 'kontak' => '085839328605',
                 'email' => 'aqil@gmail.com',
-                'status_pkl' => 'belum',
+                'status_pkl' => 'false',
             ],
             [
                 'nama' => 'ADE ZAIDAN ALTHAF',
@@ -75,7 +75,7 @@ class SiswaSeeder extends Seeder
                 'alamat' => 'Sleman',
                 'kontak' => '085839328607',
                 'email' => 'ade@gmail.com',
-                'status_pkl' => 'belum',
+                'status_pkl' => 'false',
             ],
         ]);
     }
