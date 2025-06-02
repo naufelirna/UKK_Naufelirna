@@ -48,11 +48,11 @@ class CreateNewUser implements CreatesNewUsers
     ]);
 
     // Tentukan role lalu assign
-    if ($isSiswa) {
-        $user->assignRole('siswa');
-    } elseif ($isGuru) {
-        $user->assignRole('guru');
-    }
+   if (\App\Models\Guru::where('email', $input['email'])->exists()) {
+    $user->assignRole('guru');
+} elseif (\App\Models\Siswa::where('email', $input['email'])->exists()) {
+    $user->assignRole('siswa');
+}
 
     return $user;
 }

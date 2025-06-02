@@ -11,7 +11,12 @@ class DatabaseSeeder extends Seeder
 {
     public function run(): void
     {
-        $superAdminRole = Role::firstOrCreate(['name' => 'super_admin']);
+        Role::firstOrCreate(['name' => 'super_admin', 'guard_name' => 'web']);
+        Role::firstOrCreate(['name' => 'admin_guru', 'guard_name' => 'web']);
+        Role::firstOrCreate(['name' => 'siswa', 'guard_name' => 'web']);
+        Role::firstOrCreate(['name' => 'guru', 'guard_name' => 'web']);
+        
+        $superAdminRole = Role::where('name', 'super_admin')->first();
         
         $admin = User::firstOrCreate(
             ['email' => 'coba@example.com'],
@@ -25,5 +30,9 @@ class DatabaseSeeder extends Seeder
         $admin->assignRole($superAdminRole);
         
         $this->command->info('Admin user created with super_admin role!');
+        
+        $this->call([
+            GuruSeeder::class,
+        ]);
     }
 }

@@ -1,7 +1,8 @@
 <div class="px-8">
-    
     <div class="flex flex-col md:flex-row justify-between items-center gap-4 mt-6 mb-6">
-        @if($hasSubmittedPkl)
+        @if(auth()->user()->hasRole('guru'))
+            <div class="w-4"></div>
+        @elseif($hasSubmittedPkl)
             <button disabled
                 class="text-white bg-gray-500 cursor-not-allowed font-medium rounded-lg text-sm px-4 py-2">
                 Anda sudah menambahkan data PKL
@@ -43,8 +44,7 @@
         </div>
     @endif
 
-    <!-- Table PKL -->
-     <div class="relative overflow-x-auto shadow-md sm:rounded-lg">
+    <div class="relative overflow-x-auto shadow-md sm:rounded-lg">
         <table class="w-full text-sm text-left rtl:text-right text-black-500">
            <thead style="background-color: #1E3A8A; color: white;" class="text-xs uppercase">
                 <tr>
@@ -96,9 +96,6 @@
                         @endphp
                         {{ $diff->m }} bulan {{ $diff->d }} hari
                     </td>
-
-                            </div>
-                        </td>
                     </tr>
                 @empty
                     <tr>
