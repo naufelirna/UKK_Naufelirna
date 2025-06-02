@@ -3,138 +3,98 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
 use App\Models\Pkl;
 use App\Models\Siswa;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
 class PklController extends Controller
 {
-    /**
-     * Display a listing of the resource (khusus siswa yang login).
-     */
     public function index()
     {
-        // Ambil email user yang login
-        $email = Auth::user()->email;
-
-        // Cari siswa berdasarkan email
-        $siswa = Siswa::where('email', $email)->first();
-
-        // Jika siswa ditemukan, ambil data PKL miliknya
-        if ($siswa) {
-            $pkl = Pkl::where('siswa_id', $siswa->id)->get();
-            return response()->json($pkl, 200);
-        }
-
-        return response()->json(['message' => 'Siswa tidak ditemukan'], 404);
+        $pkls = Pkl::with(['siswa', 'guru', 'industri'])->get();
+        return response()->json($pkls);
     }
 
-    /**
-     * Store a newly created resource in storage (hanya bisa simpan untuk dirinya sendiri).
-     */
     public function store(Request $request)
     {
-        $email = Auth::user()->email;
-        $siswa = Siswa::where('email', $email)->first();
-
-        if (!$siswa) {
-            return response()->json(['message' => 'Siswa tidak ditemukan'], 404);
-        }
-
-        // Validasi
         $request->validate([
+            'siswa_id' => 'required|exists:siswas,id',
             'guru_id' => 'required|exists:gurus,id',
             'industri_id' => 'required|exists:industris,id',
             'tanggal_mulai' => 'required|date',
             'tanggal_selesai' => 'required|date|after_or_equal:tanggal_mulai',
         ]);
 
-        // Cek apakah siswa sudah punya data PKL
-        if ($siswa->status_pkl) {
-            return response()->json(['message' => 'Siswa ini sudah memiliki data PKL'], 409);
+        $existing = Pkl::where('siswa_id', $request->siswa_id)->first();
+        if ($existing) {
+            return response()->json([
+                'message' => 'Anda sudah menambah data PKL sebelumnya'
+            ], 422);
         }
 
-        $pkl = new Pkl();
-        $pkl->siswa_id = $siswa->id; // pakai ID siswa dari login
-        $pkl->guru_id = $request->guru_id;
-        $pkl->industri_id = $request->industri_id;
-        $pkl->tanggal_mulai = $request->tanggal_mulai;
-        $pkl->tanggal_selesai = $request->tanggal_selesai;
-        $pkl->save();
-
-        // Update status siswa
-        $siswa->update(['status_pkl' => true]);
-
-        return response()->json($pkl, 201);
-    }
-
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
-    {
-        $email = Auth::user()->email;
-        $siswa = Siswa::where('email', $email)->first();
-
-        $pkl = Pkl::where('id', $id)->where('siswa_id', $siswa->id)->first();
-
-        if (!$pkl) {
-            return response()->json(['message' => 'Data tidak ditemukan atau bukan milik Anda'], 404);
-        }
-
-        return response()->json($pkl, 200);
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
-    {
-        $email = Auth::user()->email;
-        $siswa = Siswa::where('email', $email)->first();
-
-        $pkl = Pkl::where('id', $id)->where('siswa_id', $siswa->id)->first();
-
-        if (!$pkl) {
-            return response()->json(['message' => 'Data tidak ditemukan atau bukan milik Anda'], 404);
-        }
-
-        $request->validate([
-            'guru_id' => 'sometimes|required|exists:gurus,id',
-            'industri_id' => 'sometimes|required|exists:industris,id',
-            'tanggal_mulai' => 'sometimes|required|date',
-            'tanggal_selesai' => 'sometimes|required|date|after_or_equal:tanggal_mulai',
+        $pkl = Pkl::create([
+            'siswa_id' => $request->siswa_id,
+            'guru_id' => $request->guru_id,
+            'industri_id' => $request->industri_id,
+            'tanggal_mulai' => $request->tanggal_mulai,
+            'tanggal_selesai' => $request->tanggal_selesai,
+            'status_pkl' => 'true'
         ]);
 
-        $pkl->guru_id = $request->guru_id ?? $pkl->guru_id;
-        $pkl->industri_id = $request->industri_id ?? $pkl->industri_id;
-        $pkl->tanggal_mulai = $request->tanggal_mulai ?? $pkl->tanggal_mulai;
-        $pkl->tanggal_selesai = $request->tanggal_selesai ?? $pkl->tanggal_selesai;
-        $pkl->save();
+        $siswa = Siswa::find($request->siswa_id);
+        $siswa->update(['status_pkl' => 'true']);
 
-        return response()->json($pkl, 200);
+        return response()->json([
+            'message' => 'Data berhasil ditambahkan',
+            'data' => $pkl
+        ], 201);
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
+    public function show($id)
     {
-        $email = Auth::user()->email;
-        $siswa = Siswa::where('email', $email)->first();
-
-        $pkl = Pkl::where('id', $id)->where('siswa_id', $siswa->id)->first();
-
+        $pkl = Pkl::with(['siswa', 'guru', 'industri'])->find($id);
+        
         if (!$pkl) {
-            return response()->json(['message' => 'Data tidak ditemukan atau bukan milik Anda'], 404);
+            return response()->json(['message' => 'Data tidak ditemukan'], 404);
         }
+        
+        return response()->json($pkl);
+    }
 
+    public function update(Request $request, $id)
+    {
+        $pkl = Pkl::find($id);
+        
+        if (!$pkl) {
+            return response()->json(['message' => 'Data tidak ditemukan'], 404);
+        }
+        
+        $request->validate([
+            'guru_id' => 'required|exists:gurus,id',
+            'industri_id' => 'required|exists:industris,id',
+            'tanggal_mulai' => 'required|date',
+            'tanggal_selesai' => 'required|date|after_or_equal:tanggal_mulai',
+        ]);
+        
+        $pkl->update($request->all());
+        
+        return response()->json([
+            'message' => 'Data berhasil diperbarui',
+            'data' => $pkl
+        ]);
+    }
+
+    public function destroy($id)
+    {
+        $pkl = Pkl::find($id);
+        
+        if (!$pkl) {
+            return response()->json(['message' => 'Data tidak ditemukan'], 404);
+        }
+        
         $pkl->delete();
-
-        // Reset status PKL siswa
-        $siswa->update(['status_pkl' => false]);
-
-        return response()->json(['message' => 'Data berhasil dihapus'], 200);
+        
+        return response()->json(['message' => 'Data berhasil dihapus']);
     }
 }

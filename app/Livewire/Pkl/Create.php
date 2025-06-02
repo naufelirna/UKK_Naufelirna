@@ -12,101 +12,79 @@ use Illuminate\Support\Facades\Auth;
 
 class Create extends Component
 {
-    public $siswa_id, $guru_id, $industri_id, $tanggal_mulai, $tanggal_selesai; //ini adalah properti yang dipanggil di blade
-
-    //nyimpen nama siswa yg sedang login
+    public $siswa_id, $guru_id, $industri_id, $tanggal_mulai, $tanggal_selesai;
     public $nama_siswa;
+    public $hasSubmittedPkl = false;
 
-
-      protected string $layout = 'layouts.app';
+    protected string $layout = 'layouts.app';
 
     public function mount(){
-        //ambil email user yg login
-        //mengambil data dr tabel user
-        //laravel secara default pake model app\models\user yg terkait langsung dengan tabel users
-        $userEmail = Auth::user()->email; //jgn lupa tambahin import class auth 
-
-        //cari data siswa berdasarkan email tsb
-        //Siswa::where('email', $userEmail) = pada model siswa, database siswas, cari email berdasarkan $userEmail yg sedang login
-        //nilai akan disimpan di $siswa
+        $userEmail = Auth::user()->email;
         $siswa = Siswa::where('email', $userEmail)->first();
 
-        //kalo data siswa ditemukan,
         if ($siswa){
             $this->siswa_id = $siswa->id;
             $this->nama_siswa = $siswa->nama;
+            
+            $existing = Pkl::where('siswa_id', $this->siswa_id)->first();
+            $this->hasSubmittedPkl = $existing ? true : false;
         }
     }
 
-
-    //fungsi biat nyimpen data pkl baru (dipanggil pas submit form)
     public function create(){
-        $this->validate([ //validasi semua input
-            //validasi disesuaikan dari wire:model di blade
-            'siswa_id' => 'required|exists:siswas,id', //siswa_id = nama input yg divalidasi 
+        if($this->hasSubmittedPkl) {
+            session()->flash('error', 'Anda sudah menambah data PKL sebelumnya');
+            return redirect('/dataPkl');
+        }
+        
+        $this->validate([
+            'siswa_id' => 'required|exists:siswas,id',
             'guru_id' => 'required|exists:gurus,id',
             'industri_id' => 'required|exists:industris,id',
             'tanggal_mulai' => 'required|date',
             'tanggal_selesai' => 'required|date|after_or_equal:tanggal_mulai',
         ]);
 
-        //mulai transaksi db biar kalo error,, data ga setengah masuk
         DB::beginTransaction();
 
         try{
             $siswa = Siswa::findOrFail($this->siswa_id);
 
-            // ✅ Cek apakah data PKL sudah ada
-                $existing = Pkl::where('siswa_id', $this->siswa_id)->first();
-                if ($existing) {
-                    session()->flash('error', 'Data PKL sudah terdaftar, penambahan data ulang tidak diperbolehkan');
-                    return redirect('/dataPkl');
-                }
-
-            //nyimpen data ke tabel pkl, butuh model pkl
             Pkl::create([
                 'siswa_id' => $this->siswa_id,
                 'guru_id' => $this->guru_id,
                 'industri_id' => $this->industri_id,
                 'tanggal_mulai' => $this->tanggal_mulai,
                 'tanggal_selesai' => $this->tanggal_selesai,
+                'status_pkl' => 'true'
             ]);
 
-            //setelah berhasil buat data pkl, update status siswa bahwa uda lapor pkl
             $siswa->update([
-                'status_pkl' => true
+                'status_pkl' => 'true'
             ]);
 
-
-            //simpan perubahan permanen di db
             DB::commit();
 
             session()->flash('success', 'Data berhasil ditambahkan');
             return redirect('dataPkl');
         } catch (\Exception $e) {
             DB::rollBack();
-            session()->flash('error', 'Data PKL sudah terdaftar, penambahan data ulang tidak diperbolehkan');
+            session()->flash('error', 'Terjadi kesalahan saat menambah data PKL: ' . $e->getMessage());
             return redirect('/dataPkl');
         }
     }
 
-
-    //fungsi buat nampilin halaman form (ngirimm data ke blade)
     public function render()
     {
-
-        //ambil semua data pkl (bisa buat list atau referensi)
         $pkls = Pkl::all();
-        //$siswas = Siswa::all(); | dropdown
         $industris = Industri::all();
         $gurus = Guru::all();
 
-        //kirim data ke view livewire.pkl.create (blade)
         return view('livewire.pkl.create', [
-        'pkls' => $pkls,
-        //'siswas' => $siswas,
-        'industris' => $industris,
-        'gurus' => $gurus,
+            'pkls' => $pkls,
+            'industris' => $industris,
+            'gurus' => $gurus,
+            'hasSubmittedPkl' => $this->hasSubmittedPkl,
         ]);
     }
 }

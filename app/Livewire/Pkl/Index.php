@@ -7,14 +7,26 @@ use App\Models\Pkl;
 use App\Models\Siswa;
 use App\Models\Guru;
 use App\Models\Industri;
+use Illuminate\Support\Facades\Auth;
 
 class Index extends Component
 {
     public $search = '';
+    public $hasSubmittedPkl = false;
+    
+    public function mount()
+    {
+        $userEmail = Auth::user()->email;
+        $siswa = Siswa::where('email', $userEmail)->first();
+        
+        if ($siswa) {
+            $existing = Pkl::where('siswa_id', $siswa->id)->first();
+            $this->hasSubmittedPkl = $existing ? true : false;
+        }
+    }
     
     public function render()
     {
-        // Ambil data PKL dan cari berdasarkan relasi
         $pklsQuery = Pkl::with(['siswa', 'guru', 'industri']);
 
         if (!empty($this->search)) {
@@ -44,6 +56,7 @@ class Index extends Component
             'siswas' => $siswas,
             'gurus' => $gurus,
             'industris' => $industris,
+            'hasSubmittedPkl' => $this->hasSubmittedPkl
         ]);
     }
 }

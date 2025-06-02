@@ -1,13 +1,18 @@
 <div class="px-8">
     
-     <!-- Header: Tombol Tambah + Form Search -->
     <div class="flex flex-col md:flex-row justify-between items-center gap-4 mt-6 mb-6">
-        <!-- Tombol Tambah Data -->
-       <a href="{{ route('pklCreate') }}"
-           class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
-            Tambahkan Data PKL
-        </a>
-        <!-- Form Search -->
+        @if($hasSubmittedPkl)
+            <button disabled
+                class="text-white bg-gray-500 cursor-not-allowed font-medium rounded-lg text-sm px-4 py-2">
+                Anda sudah menambahkan data PKL
+            </button>
+        @else
+            <a href="{{ route('pklCreate') }}"
+                class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
+                Tambahkan Data PKL
+            </a>
+        @endif
+        
         <form class="flex items-center">
             <label for="default-search" class="sr-only">Search</label>
             <div class="relative">
