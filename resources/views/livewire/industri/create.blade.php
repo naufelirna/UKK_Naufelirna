@@ -22,12 +22,12 @@
 
         <div>
             <label style="font-size: 0.9rem; font-weight: 500; color:rgb(0, 0, 0);">Website</label>
-            <input type="url" wire:model="website"
+            <input type="url" wire:model="web"
                 placeholder="https://contoh.com"
                 style="width: 100%; padding: 0.5rem; border: 1px solid #D1D5DB; border-radius: 0.5rem; outline: none;"
                 onfocus="this.style.borderColor='#A78BFA'; this.style.boxShadow='0 0 0 2px #E9D5FF';"
                 onblur="this.style.borderColor='#D1D5DB'; this.style.boxShadow='none';">
-            @error('website') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
+            @error('web') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
         </div>
 
         <div>

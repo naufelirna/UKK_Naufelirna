@@ -15,11 +15,9 @@ Route::middleware([
     'auth:sanctum',
     config('jetstream.auth_session'),
     'verified',
-    'CheckUserRoles:super_admin',
-    'CheckUserRoles:admin_guru',
-    'CheckUserRoles:siswa'
 ])->group(function () {
-    Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+    Route::get('/dashboard', [DashboardController::class, 'index'])
+        ->name('dashboard');
 });
 
 
@@ -41,8 +39,3 @@ Route::get('/dataSiswa',App\Livewire\Siswa\Index::class)->name('siswa');
 Route::get('dataIndustri',App\Livewire\Industri\Index::class)->name('industri');
 Route::get('/dataIndustri/createDataIndustri',App\Livewire\Industri\Create::class)->name('industriCreate');
 Route::get('/dataIndustri/{id}/editDataIndustri',App\Livewire\Industri\Edit::class)->name('industriEdit');
-
-//dashboard
-Route::get('/dashboard', [DashboardController::class, 'index'])
-    ->middleware(['auth'])
-    ->name('dashboard');

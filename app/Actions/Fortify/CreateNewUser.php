@@ -18,6 +18,7 @@ class CreateNewUser implements CreatesNewUsers
      * Validate and create a newly registered user.
      * digunakan untuk memproses pendaftaran user baru
      * @param  array<string, string>  $input
+     * 
      */
     public function create(array $input): User
     {

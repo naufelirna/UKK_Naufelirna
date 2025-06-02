@@ -28,7 +28,7 @@ class CheckUserRoles
         // $user->name, $user->id dan disimpan di variabel $user
 
         //if = jika
-        //(!Auth::check()) = variabel utk cek user uda login atau belum, kalo uda true. belum berarti false
+        //(!Auth::check()) = variabel utk cek user udh login pa belum, udh? true. belum? false
         //digabung = jika user blm login
         // || operator atau. jika salah satu bernilai true, maka if akan dijalankan
         //!$user->hasAnyRole(['super_admin', 'admin_guru']))
@@ -40,6 +40,6 @@ class CheckUserRoles
             return redirect()->route('tunggu');
         }
         
-        return $next($request); //kalau uda bisa, dilanjut req yg lain
+        return $next($request); //kalau udh bisa, dilanjut req yg lain
     }
 }

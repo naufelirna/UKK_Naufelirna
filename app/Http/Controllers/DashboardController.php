@@ -7,6 +7,7 @@ use App\Models\Siswa;
 use App\Models\Industri;
 use App\Models\Pkl;
 
+
 class DashboardController extends Controller
 {
     public function index()

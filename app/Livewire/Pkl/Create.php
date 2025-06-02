@@ -55,15 +55,6 @@ class Create extends Component
 
         try{
             $siswa = Siswa::findOrFail($this->siswa_id);
-            //ngecek uda perna lapor apa belum
-            if ($siswa->status_pkl){
-                DB::rollBack();
-                //kalo uda lapor, batalkan transaksi dan kemmbalikan data ke kondisi awal
-                session()->flash('error', 'Laporan Dibatalkan: Siswa ini sudah memiliki data PKL.');
-                //redirect ke halaman daftar data pkl
-                return redirect('/dataPkl');
-            }
-
             //nyimpen data ke tabel pkl, butuh model pkl
             Pkl::create([
                 'siswa_id' => $this->siswa_id,
