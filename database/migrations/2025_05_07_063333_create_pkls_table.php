@@ -17,8 +17,8 @@ return new class extends Migration
             $table->foreignId('industri_id')->constrained('industris')->onDelete('cascade');
             $table->foreignId('guru_id')->constrained('gurus')->onDelete('cascade');
             $table->date('tanggal_mulai');
-            $table->date('tanggal_selesai');
-            $table->enum('status_pkl', ['berlangsung', 'selesai']);
+            $table->date('tanggal_False');
+            $table->enum('status_pkl', ['True', 'False']);
             $table->timestamps();
         });                
     }

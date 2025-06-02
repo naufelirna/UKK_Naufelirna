@@ -60,10 +60,10 @@ class PklController extends Controller
             // jika hanya menggunakan required, semua form wajib diisi, namun function ini kan semacam edit, jadi tak mesti semua form yang hendak diedit
             // datanglah sometimes, hanya form yang di edit yang akan kekirim
             'siswa_id' => 'sometimes|required|exists:siswas,id',
-            'guru_id' => 'sometimes|required|exists:gurus,id',
-            'industri_id' => 'sometimes|required|exists:industris,id',
-            'mulai' => 'sometimes|required|date',
-            'selesai' => 'sometimes|required|date|after_or_equal:mulai', 
+    'guru_id' => 'sometimes|required|exists:gurus,id',
+    'industri_id' => 'sometimes|required|exists:industris,id',
+    'mulai' => 'sometimes|required|date',
+    'selesai' => 'sometimes|required|date|after_or_equal:mulai',
         ]);
 
         // jika ada data baru dikirim ($request->...), gunakan nilai baru itu

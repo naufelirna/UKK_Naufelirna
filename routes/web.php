@@ -28,6 +28,8 @@ Route::middleware([
 Route::get('dataPkl',App\Livewire\Pkl\Index::class)->name('pkl');
 Route::get('/dataPkl/createDataPkl',App\Livewire\Pkl\Create::class)->name('pklCreate');
 Route::get('/dataPkl/{id}/editDataPkl',App\Livewire\Pkl\Edit::class)->name('pklEdit');
+Route::get('/pkl/view', [PklController::class, 'view'])->name('pklView');
+
 
 //guru-ish
 Route::get('/dataGuru',App\Livewire\Guru\Index::class)->name('guru');

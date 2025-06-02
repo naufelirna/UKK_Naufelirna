@@ -48,10 +48,10 @@ class SiswaResource extends Resource
                 TextInput::make('email')->required()->email(),
                 Select::make('status_pkl')
                     ->options([
-                        'berlangsung' => 'berlangsung',
-                        'selesai' => 'Selesai',
+                        'True' => 'True',
+                        'False' => 'False',
                     ])
-                    ->default('belum')
+                    ->default('True')
                     ->required(),
                 FileUpload::make('foto')
                 ->image()
@@ -90,8 +90,8 @@ class SiswaResource extends Resource
             Tables\Columns\BadgeColumn::make('status_pkl')
                 ->label('Status PKL')
                 ->colors([
-                    'warning' => 'berlangsung',
-                    'success' => 'selesai',
+                    'warning' => 'True',
+                    'success' => 'False',
                 ])
                 ->sortable(),
             

@@ -24,7 +24,7 @@ class APIGuruontroller extends Controller
         $guru = new Guru();
         $guru->nama = $request->nama;
         $guru->nip = $request->nip;
-        $guru->jenis_kelamin = $request->jenis_kelamin;
+        $guru->gender= $request->gender;
         $guru->alamat = $request->alamat;
         $guru->kontak = $request->kontak;
         $guru->email = $request->email;
@@ -49,7 +49,7 @@ class APIGuruontroller extends Controller
         $guru = Guru::find($id);
         $guru->nama = $request->nama;
         $guru->nip = $request->nip;
-        $guru->jenis_kelamin = $request->jenis_kelamin;
+        $guru->gender=$request->gender;
         $guru->alamat = $request->alamat;
         $guru->kontak = $request->kontak;
         $guru->email = $request->email;

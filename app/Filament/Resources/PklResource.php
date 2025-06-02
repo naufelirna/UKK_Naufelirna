@@ -75,8 +75,8 @@ class PklResource extends Resource
                 Select::make('status_pkl')
                     ->label('Status PKL')
                     ->options([
-                        'berlangsung' => 'Berlangsung',
-                         'selesai' => 'Selesai'])
+                        'True'=> 'True',
+                         'False'=>'False'])
             ]);
     }
 
