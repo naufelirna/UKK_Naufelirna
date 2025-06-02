@@ -62,4 +62,9 @@ class AdminPanelProvider extends PanelProvider
                 \BezhanSalleh\FilamentShield\FilamentShieldPlugin::make(),
             ]);
     }
+
+    public function canAccess(): bool
+    {
+        return auth()->check() && auth()->user()->hasAnyRole(['super-admin', 'guru', 'siswa']);
+    }
 }

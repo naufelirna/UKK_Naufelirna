@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\ValidationException; //ditambah ini
 use Laravel\Fortify\Contracts\CreatesNewUsers;
 use Laravel\Jetstream\Jetstream;
+use App\Models\Guru; //tambah ini
 
 class CreateNewUser implements CreatesNewUsers
 {
@@ -21,27 +22,38 @@ class CreateNewUser implements CreatesNewUsers
      * 
      */
     public function create(array $input): User
-    {
-        Validator::make($input, [
-            'name' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'string', 'email', 'max:255', 'unique:users,email'], //ditambah unique:users,email
-            'password' => $this->passwordRules(), //password divalidasi berdasarkan aturan dr trait passwordvalidationrules
-            'terms' => Jetstream::hasTermsAndPrivacyPolicyFeature() ? ['accepted', 'required'] : '',
-        ])->validate();
+{
+    Validator::make($input, [
+        'name' => ['required', 'string', 'max:255'],
+        'email' => ['required', 'string', 'email', 'max:255', 'unique:users,email'],
+        'password' => $this->passwordRules(),
+        'terms' => Jetstream::hasTermsAndPrivacyPolicyFeature() ? ['accepted', 'required'] : '',
+    ])->validate();
 
+    // Cek email di siswa atau guru
+    $isSiswa = Siswa::where('email', $input['email'])->exists();
+    $isGuru = Guru::where('email', $input['email'])->exists();
 
-        //ngecek email yg dimasukin ada apa engga di tabel siswa
-        if (!Siswa::where('email', $input['email'])->exists()){
-            // kalo gaada, kasi error kaya gini
-            throw ValidationException::withMessages([
-                'email' => 'Email tidak terdaftar sebagai siswa',
-            ]);
-        }
-
-        return User::create([
-            'name' => $input['name'],
-            'email' => $input['email'],
-            'password' => Hash::make($input['password']),
+    if (!$isSiswa && !$isGuru) {
+        throw ValidationException::withMessages([
+            'email' => 'Email tidak terdaftar sebagai siswa atau guru.',
         ]);
     }
+
+    // Buat user
+    $user = User::create([
+        'name' => $input['name'],
+        'email' => $input['email'],
+        'password' => Hash::make($input['password']),
+    ]);
+
+    // Tentukan role lalu assign
+    if ($isSiswa) {
+        $user->assignRole('siswa');
+    } elseif ($isGuru) {
+        $user->assignRole('guru');
+    }
+
+    return $user;
+}
 }
