@@ -44,7 +44,6 @@
                     <th class="px-6 py-3">Kontak</th>
                     <th class="px-6 py-3">Email</th>
                     <th class="px-6 py-3">Website</th>
-                    <th class="px-6 py-3">Aksi</th>
                 </tr>
             </thead>
             <tbody>
@@ -58,13 +57,6 @@
                         <td class="px-6 py-4">{{ $industri->kontak }}</td>
                         <td class="px-6 py-4">{{ $industri->email }}</td>
                         <td class="px-6 py-4">{{ $industri->web }}</td>
-                        <td class="px-6 py-4">
-                            <a href="{{ route('industriEdit', ['id' => $industri->id]) }}"
-                             class="bg-blue-600 hover:bg-blue-700 text-white font-medium text-sm px-3 py-1.5 rounded-lg transition">
-                             Edit
-                            </a>
-
-                        </td>
                     </tr>
                 @empty
                     <tr>

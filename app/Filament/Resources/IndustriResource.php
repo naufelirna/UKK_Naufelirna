@@ -120,7 +120,7 @@ class IndustriResource extends Resource
             ])
             ->defaultSort('nama')
             ->actions([
-                Tables\Actions\EditAction::make(),
+                //Tables\Actions\EditAction::make(),
                 Tables\Actions\DeleteAction::make(),
             ])
              ->bulkActions([
@@ -164,7 +164,7 @@ class IndustriResource extends Resource
         return [
             'index' => Pages\ListIndustris::route('/'),
             'create' => Pages\CreateIndustri::route('/create'),
-            'edit' => Pages\EditIndustri::route('/{record}/edit'),
+            //'edit' => Pages\EditIndustri::route('/{record}/edit'),
         ];
     }
 }

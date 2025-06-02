@@ -1,4 +1,5 @@
 <div class="px-8">
+    
      <!-- Header: Tombol Tambah + Form Search -->
     <div class="flex flex-col md:flex-row justify-between items-center gap-4 mt-6 mb-6">
         <!-- Tombol Tambah Data -->
@@ -51,7 +52,6 @@
                     <th class="px-6 py-3">Mulai</th>
                     <th class="px-6 py-3">Selesai</th>
                     <th class="px-6 py-3">Durasi</th>
-                    <th class="px-6 py-3 text-center">Aksi</th>
                 </tr>
             </thead>
             <tbody>
@@ -59,7 +59,7 @@
                     <tr class="background-color: white; border-bottom: 1px solid #BFDBFE;"
                         onmouseover="this.style.backgroundColor='#A78BFA';"
                         onmouseout="this.style.backgroundColor='white';">
-                        <th scope="row" class="px-6 py-4 font-medium whitespace-nowrap text-white">
+                        <th scope="row" class="px-6 py-4 font-medium whitespace-nowrap text-blue-900">
                             {{ $key + 1 }}
                         </th>
                         <td class="px-6 py-4">
@@ -78,30 +78,20 @@
                             {{ $pkl->industri->bidang_usaha }}
                         </td>
                         <td class="px-6 py-4">
-                            {{ \Carbon\Carbon::parse($pkl->mulai)->format('d M Y') }}
+                            {{ \Carbon\Carbon::parse($pkl->tanggal_mulai)->format('d M Y') }}
                         </td>
                         <td class="px-6 py-4">
-                            {{ \Carbon\Carbon::parse($pkl->selesai)->format('d M Y') }}
+                            {{ \Carbon\Carbon::parse($pkl->tanggal_selesai)->format('d M Y') }}
                         </td>
                         <td class="px-6 py-4">
-                            {{ \Carbon\Carbon::parse($pkl->mulai)->diffInDays(\Carbon\Carbon::parse($pkl->selesai)) }}
-                            hari
-                        </td>
-                        <td class="px-6 py-4">
-                            <div class="flex gap-x-2 justify-center">
-                                <a href="{{ route('pklView', ['id' => $pkl->id ]) }}" type="button"
-                                    class="text-white bg-purple-600 hover:bg-purple-700 focus:ring-4 focus:outline-none focus:ring-purple-800 font-medium rounded-lg text-sm px-4 py-2 transition-colors duration-200">
-                                    View
-                                </a>
-                                @php 
-                                    $user = Auth::user();
-                                @endphp
-                                @if ($user && $user->email === $pkl->siswa->email)
-                                <a href="{{ route('pklEdit', ['id' => $pkl->id]) }}"
-                             class="bg-blue-600 hover:bg-blue-700 text-white font-medium text-sm px-3 py-1.5 rounded-lg transition">
-                             Edit
-                            </a>
-                                @endif
+                        @php
+                            $mulai = \Carbon\Carbon::parse($pkl->tanggal_mulai);
+                            $selesai = \Carbon\Carbon::parse($pkl->tanggal_selesai);
+                            $diff = $mulai->diff($selesai);
+                        @endphp
+                        {{ $diff->m }} bulan {{ $diff->d }} hari
+                    </td>
+
                             </div>
                         </td>
                     </tr>

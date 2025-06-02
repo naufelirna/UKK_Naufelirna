@@ -77,7 +77,7 @@ class Create extends Component
             return redirect('dataPkl');
         } catch (\Exception $e) {
             DB::rollBack();
-            session()->flash('error', 'Terjadi kesalahan saat menyimpan data');
+            session()->flash('error', 'Data PKL sudah terdaftar, penambahan data ulang tidak diperbolehkan');
             return redirect('/dataPkl');
         }
     }
