@@ -4,6 +4,7 @@ namespace Database\Seeders;
 
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\DB;
 use App\Models\Guru;
 
 class GuruSeeder extends Seeder
@@ -13,10 +14,13 @@ class GuruSeeder extends Seeder
      */
     public function run(): void
     {
+
+        DB::table('gurus')->delete();
+
          $gurus = Guru::insert([
             [
                 'nama' => 'Sugiarto, ST', 
-                'nip' => '197203172005011012',
+                'nip' => '197303172005011012',
                 'gender' => 'L',
                 'alamat' => 'Klaten',
                 'kontak' => '085643188811',

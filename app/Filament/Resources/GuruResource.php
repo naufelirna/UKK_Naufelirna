@@ -87,11 +87,21 @@ class GuruResource extends Resource
                     ->maxLength(255),
 
                     TextInput::make('kontak')
-                    ->label('Kontak')
-                    ->placeholder('Kontak Guru')
-                    ->required()
-                    ->maxLength(20)
-                    ->tel(),
+    ->label('Kontak')
+    ->placeholder('Kontak Guru')
+    ->required()
+    ->maxLength(20)
+    ->tel()
+    ->prefix('+62')
+                ->afterStateUpdated(function ($state, callable $set) {
+                    // Pastikan yang tersimpan di database pakai +62 di depan
+                    if (str_starts_with($state, '0')) {
+                        $set('kontak', '+62' . substr($state, 1));
+                    } elseif (!str_starts_with($state, '+62')) {
+                        // Kalau user input tanpa 0 atau +62, tambahkan +62 otomatis
+                        $set('kontak', '+62' . $state);
+        }
+    })
             ]);
     }
 

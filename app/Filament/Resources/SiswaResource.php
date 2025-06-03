@@ -12,6 +12,8 @@ use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use App\Models\User;
+
 
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Textarea;
@@ -107,11 +109,46 @@ class SiswaResource extends Resource
             ->actions([
                 Tables\Actions\EditAction::make(),
             ])
-            ->bulkActions([
+           ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
-                ]),
-            ])
+                   Tables\Actions\DeleteBulkAction::make()
+                    ->action(function ($records, $data) {
+                        $undeletedNames = [];
+
+                        foreach ($records as $record) {
+                            if ($record->pkl) {
+                                $undeletedNames[] = $record->nama;
+                                continue;
+                            }
+
+                            // Hapus user terkait dulu
+                            $user = User::where('email', $record->email)
+            ->where('role', 'siswa')
+            ->first();
+
+
+                            if ($user) {
+                                $user->delete();
+                            }
+
+                            $record->delete();
+                        }
+
+                        if (count($undeletedNames)) {
+                            \Filament\Notifications\Notification::make()
+                                ->title('Sebagian siswa tidak bisa dihapus')
+                                ->body('Siswa berikut tidak dihapus karena sedang mengikuti PKL: ' . implode(', ', $undeletedNames))
+                                ->danger()
+                                ->send();
+                        } else {
+                            \Filament\Notifications\Notification::make()
+                                ->title('Berhasil menghapus semua siswa yang dipilih')
+                                ->success()
+                                ->send();
+                        }
+                    }),
+                ])
+])
             ->headerActions([
                 Action::make('Import CSV')
                     ->form([
