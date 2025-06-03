@@ -5,6 +5,7 @@ namespace App\Filament\Resources;
 use App\Filament\Resources\GuruResource\Pages;
 use App\Filament\Resources\GuruResource\RelationManagers;
 use App\Models\Guru;
+use App\Models\User;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
@@ -87,21 +88,14 @@ class GuruResource extends Resource
                     ->maxLength(255),
 
                     TextInput::make('kontak')
-    ->label('Kontak')
-    ->placeholder('Kontak Guru')
-    ->required()
-    ->maxLength(20)
-    ->tel()
-    ->prefix('+62')
-                ->afterStateUpdated(function ($state, callable $set) {
-                    // Pastikan yang tersimpan di database pakai +62 di depan
-                    if (str_starts_with($state, '0')) {
-                        $set('kontak', '+62' . substr($state, 1));
-                    } elseif (!str_starts_with($state, '+62')) {
-                        // Kalau user input tanpa 0 atau +62, tambahkan +62 otomatis
-                        $set('kontak', '+62' . $state);
-        }
-    })
+                    ->required()
+                    ->maxLength(20)
+                    ->beforeStateDehydrated(function ($state, $set) {
+                        if (str_starts_with($state, '08')) {
+                            $set('kontak', '+62' . substr($state, 1));
+                        }
+                        return $state;
+                    }),
             ]);
     }
 
@@ -116,11 +110,30 @@ class GuruResource extends Resource
                 TextColumn::make('kontak'),
                 TextColumn::make('email')->searchable(),
             ])
-            ->filters([
-                //
-            ])
+            ->filters([])
             ->actions([
-                Tables\Actions\EditAction::make(),
+                Tables\Actions\EditAction::make()
+                    ->beforeFormValidated(function ($data, $record) {
+                        session(['old_guru_email' => $record->email]);
+                    })
+                    ->after(function ($data, $record) {
+                        $oldEmail = session('old_guru_email');
+                        
+                        if ($oldEmail !== $record->email) {
+                            $user = User::where('email', $oldEmail)->first();
+                            
+                            if ($user) {
+                                $user->email = $record->email;
+                                $user->save();
+                                
+                                Notification::make()
+                                    ->title('Email diperbarui')
+                                    ->body('Email guru dan user telah diperbarui.')
+                                    ->success()
+                                    ->send();
+                            }
+                        }
+                    }),
                 Tables\Actions\DeleteAction::make(),
             ])
             ->bulkActions([
@@ -134,15 +147,15 @@ class GuruResource extends Resource
                         FileUpload::make('file')
                             ->label('Pilih CSV')
                             ->acceptedFileTypes(['text/csv', 'text/plain', 'application/vnd.ms-excel'])
-                            ->disk('public') // pastikan disk 'public' digunakan
-                            ->directory('uploads') // simpan di folder 'storage/app/public/uploads'
+                            ->disk('public')
+                            ->directory('uploads')
                             ->required(),
                     ])
                     ->action(function (array $data) {
                         $filePath = storage_path('app/public/' . $data['file']);
                         Excel::import(new GuruImport, $filePath);
-                        \Illuminate\Support\Facades\Storage::delete($data['file']);
-                        \Filament\Notifications\Notification::make()
+                        Storage::delete($data['file']);
+                        Notification::make()
                             ->title('Data guru berhasil diimpor!')
                             ->success()
                             ->send();
@@ -155,6 +168,7 @@ class GuruResource extends Resource
     {
         return [];
     }
+    
     public static function getPages(): array
     {
         return [

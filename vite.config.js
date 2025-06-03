@@ -1,14 +1,24 @@
 import { defineConfig } from 'vite';
 import laravel from 'laravel-vite-plugin';
-import { execSync } from 'child_process';
-
-console.log("PHP version from Vite:", execSync("php -v").toString());
 
 export default defineConfig({
     plugins: [
         laravel({
-            input: ['resources/css/app.css', 'resources/js/app.js'],
+            input: 'resources/js/app.js',
             refresh: true,
         }),
     ],
+    server: {
+        host: '0.0.0.0',
+        hmr: {
+            host: 'ukk9.sija.local',
+        },
+        cors: {
+            origin: '*',
+            methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
+            credentials: true
+        },
+        strictPort: true,
+        port: 5173
+    },
 });

@@ -5,20 +5,16 @@ namespace Database\Seeders;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
-
 use App\Models\Siswa;
 
 class SiswaSeeder extends Seeder
 {
-    /**
-     * Run the database seeds.
-     */
     public function run(): void
     {
-        DB::table('pkls')->delete(); // hapus data anak dulu
-DB::table('siswas')->delete(); // baru hapus data utama
+        DB::table('pkls')->delete();
+        DB::table('siswas')->delete();
 
-        $siswa = Siswa::insert([
+        Siswa::insert([
             [
                 'nama' => 'MUTIARA SEKAR KINASIH',
                 'nis'=> '20436',
@@ -89,23 +85,8 @@ DB::table('siswas')->delete(); // baru hapus data utama
                 'alamat' => 'Sleman',
                 'kontak' => '09865729276',
                 'email' => 'siswa@gmail.com',
-                'status_pkl' => 'true',
+                'status_pkl' => 'false',
             ],
         ]);
-
-         foreach ($siswas as $siswaData) {
-            // Insert ke tabel siswas
-            $siswa = Siswa::create($siswaData);
-
-            // Buat user untuk login
-            User::firstOrCreate(
-                ['email' => $siswaData['email']],
-                [
-                    'name' => $siswaData['nama'],
-                    'password' => bcrypt('password123'), // Password default
-                    'role' => 'siswa',
-                ]
-            );
-        }
     }
 }

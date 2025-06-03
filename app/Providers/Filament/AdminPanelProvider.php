@@ -18,6 +18,7 @@ use Illuminate\Routing\Middleware\SubstituteBindings;
 use Illuminate\Session\Middleware\StartSession;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
 use App\Filament\Resources\UserResource;
+use App\Http\Middleware\RedirectSiswaFromAdmin;
 
 class AdminPanelProvider extends PanelProvider
 {
@@ -54,6 +55,7 @@ class AdminPanelProvider extends PanelProvider
                 SubstituteBindings::class,
                 DisableBladeIconComponents::class,
                 DispatchServingFilamentEvent::class,
+                RedirectSiswaFromAdmin::class,
             ])
             ->authMiddleware([
                 Authenticate::class,
@@ -65,6 +67,6 @@ class AdminPanelProvider extends PanelProvider
 
     public function canAccess(): bool
     {
-        return auth()->check() && auth()->user()->hasAnyRole(['super-admin', 'guru', 'siswa']);
+        return auth()->check() && auth()->user()->hasAnyRole(['super_admin', 'admin_guru', 'guru']);
     }
 }

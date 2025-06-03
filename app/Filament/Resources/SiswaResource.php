@@ -46,109 +46,120 @@ class SiswaResource extends Resource
                     ])
                     ->required(),
                 Textarea::make('alamat')->required(),
-                TextInput::make('kontak')->required()->maxLength(20),
+                TextInput::make('kontak')
+                    ->required()
+                    ->maxLength(20)
+                    ->beforeStateDehydrated(function ($state, $set) {
+                        if (str_starts_with($state, '08')) {
+                            $set('kontak', '+62' . substr($state, 1));
+                        }
+                        return $state;
+                    }),
                 TextInput::make('email')->required()->email(),
                 Select::make('status_pkl')
                     ->options([
                         'True' => 'True',
                         'False' => 'False',
                     ])
-                    ->default('True')
+                    ->default('False')
                     ->required(),
                 FileUpload::make('foto')
-                ->image()
-                ->directory('fotosiswa')
-                ->visibility('public')
-                ->imagePreviewHeight('150')
-                ->loadingIndicatorPosition('left')
-                ->uploadProgressIndicatorPosition('left')
-                ->removeUploadedFileButtonPosition('right')
-                ->downloadable()
-                ->openable()
-                ->required(false),
-        ]);
-        }
+                    ->image()
+                    ->directory('fotosiswa')
+                    ->visibility('public')
+                    ->imagePreviewHeight('150')
+                    ->loadingIndicatorPosition('left')
+                    ->uploadProgressIndicatorPosition('left')
+                    ->removeUploadedFileButtonPosition('right')
+                    ->downloadable()
+                    ->openable()
+                    ->required(false),
+            ]);
+    }
 
     public static function table(Table $table): Table
     {
         return $table
             ->columns([
                 Tables\Columns\TextColumn::make('nama')
-                ->searchable()
-                ->sortable(),
-                
-            Tables\Columns\TextColumn::make('nis')
-                ->searchable()
-                ->sortable(),
-                
-            Tables\Columns\TextColumn::make('gender')
-                ->label('Jenis Kelamin')
-                ->sortable(),
-                
-            Tables\Columns\TextColumn::make('kontak'),
-            
-            Tables\Columns\TextColumn::make('email'),
-            
-            Tables\Columns\BadgeColumn::make('status_pkl')
-                ->label('Status PKL')
-                ->colors([
-                    'warning' => 'True',
-                    'success' => 'False',
-                ])
-                ->sortable(),
-            
+                    ->searchable()
+                    ->sortable(),
+
+                Tables\Columns\TextColumn::make('nis')
+                    ->searchable()
+                    ->sortable(),
+
+                Tables\Columns\TextColumn::make('gender')
+                    ->label('Jenis Kelamin')
+                    ->sortable(),
+
+                Tables\Columns\TextColumn::make('kontak'),
+
+                Tables\Columns\TextColumn::make('email'),
+
+                Tables\Columns\BadgeColumn::make('status_pkl')
+                    ->label('Status PKL')
+                    ->colors([
+                        'warning' => 'True',
+                        'success' => 'False',
+                    ])
+                    ->sortable(),
+
                 Tables\Columns\ImageColumn::make('foto')
-                ->disk('public')
-                ->height(50)
-                ->circular()
-                ->searchable(),
-        ])
+                    ->disk('public')
+                    ->height(50)
+                    ->circular()
+                    ->searchable(),
+            ])
             ->filters([
                 //
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
             ])
-           ->bulkActions([
+            ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
-                   Tables\Actions\DeleteBulkAction::make()
-                    ->action(function ($records, $data) {
-                        $undeletedNames = [];
-
-                        foreach ($records as $record) {
-                            if ($record->pkl) {
-                                $undeletedNames[] = $record->nama;
-                                continue;
-                            }
-
-                            // Hapus user terkait dulu
-                            $user = User::where('email', $record->email)
-            ->where('role', 'siswa')
-            ->first();
-
-
-                            if ($user) {
-                                $user->delete();
-                            }
-
-                            $record->delete();
-                        }
-
-                        if (count($undeletedNames)) {
-                            \Filament\Notifications\Notification::make()
-                                ->title('Sebagian siswa tidak bisa dihapus')
-                                ->body('Siswa berikut tidak dihapus karena sedang mengikuti PKL: ' . implode(', ', $undeletedNames))
-                                ->danger()
-                                ->send();
-                        } else {
-                            \Filament\Notifications\Notification::make()
-                                ->title('Berhasil menghapus semua siswa yang dipilih')
-                                ->success()
-                                ->send();
-                        }
-                    }),
+                    Tables\Actions\DeleteBulkAction::make()
+    ->action(function ($records, $data) {
+        $pklStudentNames = [];
+        $deletedCount = 0;
+        
+        foreach ($records as $record) {
+            // Check if student has PKL records
+            if ($record->pkl) {
+                $pklStudentNames[] = $record->nama;
+                // Skip deletion for students with PKL records
+                continue;
+            }
+            
+            // Delete associated user
+            $user = User::where('email', $record->email)
+                ->first();
+                
+            if ($user) {
+                $user->delete();
+            }
+            
+            // Delete the student record
+            $record->delete();
+            $deletedCount++;
+        }
+        
+        if (count($pklStudentNames) > 0) {
+            \Filament\Notifications\Notification::make()
+                ->title("$deletedCount siswa berhasil dihapus")
+                ->body('Siswa berikut tidak dapat dihapus karena memiliki data PKL: ' . implode(', ', $pklStudentNames))
+                ->warning()
+                ->send();
+        } else {
+            \Filament\Notifications\Notification::make()
+                ->title("Berhasil menghapus $deletedCount siswa")
+                ->success()
+                ->send();
+        }
+    }),
                 ])
-])
+            ])
             ->headerActions([
                 Action::make('Import CSV')
                     ->form([
@@ -169,7 +180,7 @@ class SiswaResource extends Resource
                             ->send();
                     })
                     ->label('Import CSV'),
-                ]);
+            ]);
     }
 
     public static function getRelations(): array
