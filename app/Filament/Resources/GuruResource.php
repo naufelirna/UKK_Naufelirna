@@ -159,6 +159,9 @@ class GuruResource extends Resource
                             ->success()
                             ->send();
                     })
+                    ->visible(function () {
+                        return auth()->user()->role !== 'guru';
+                    })
                     ->label('Import CSV'),
                     ]);
     }

@@ -10,7 +10,7 @@ class RedirectSiswaFromAdmin
 {
     public function handle(Request $request, Closure $next): Response
     {
-        if (auth()->check() && auth()->user()->hasRole('siswa')) {
+        if (auth()->check() && (auth()->user()->hasRole('siswa') || auth()->user()->hasRole('guru'))) {
             return redirect('/dashboard');
         }
         
