@@ -134,7 +134,6 @@ class GuruResource extends Resource
                             }
                         }
                     }),
-                Tables\Actions\DeleteAction::make(),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
